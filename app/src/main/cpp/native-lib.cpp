@@ -4,7 +4,7 @@
 
 extern "C"
 jstring
-Java_bying_imageprotect_MainActivity_stringFromJNI(
+Java_bying_imageprotect_ui_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";

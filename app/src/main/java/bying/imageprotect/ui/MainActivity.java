@@ -1,8 +1,10 @@
-package bying.imageprotect;
+package bying.imageprotect.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import bying.imageprotect.R;
 
 public class MainActivity extends AppCompatActivity {
 
