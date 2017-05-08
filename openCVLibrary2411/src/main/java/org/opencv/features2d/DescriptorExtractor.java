@@ -162,7 +162,7 @@ public class DescriptorExtractor {
  *   <li> <code>"FREAK"</code> -- "FREAK"
  * </ul>
  *
- * <p>A combined format is also supported: descriptor extractor adapter name
+ * <p>A combined format is also supported: descriptor extractor base name
  * (<code>"Opponent"</code> -- "OpponentColorDescriptorExtractor") + descriptor
  * extractor name (see above), for example: <code>"OpponentSIFT"</code>.</p>
  *

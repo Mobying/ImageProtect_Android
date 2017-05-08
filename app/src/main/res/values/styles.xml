@@ -1,11 +1,55 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <!--Splash theme-->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <!--Drawer theme-->
+    <style name="AppTheme.DrawerArrowToggle" parent="Base.Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
+    <!--Register-->
+    <style name="Register_Input">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/base_edit_input</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40.0dip</item>
+        <item name="android:layout_marginTop">10.0dp</item>
+        <item name="android:layout_marginLeft">10.0dp</item>
+        <item name="android:layout_marginRight">10.0dp</item>
+    </style>
+    <style name="Register_Edit">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:layout_marginLeft">10.0dp</item>
+        <item name="android:background">#00000000</item>
+    </style>
+    <!--封装字体-->
+    <style name="Smile">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="Smile.TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="Smile.TextView._Black">
+        <item name="android:textColor">#3e3e39</item>
+    </style>
+    <style name="Smile.ImageView">
+        <item name="android:contentDescription">@string/app_name</item>
+    </style>
+    <!--其他-->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 </resources>

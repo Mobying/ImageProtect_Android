@@ -1,12 +1,18 @@
 package bying.imageprotect.ui;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import bying.imageprotect.R;
+import bying.imageprotect.base.LeftMenuBaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends LeftMenuBaseActivity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -14,14 +20,56 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
+    private Toolbar toolbar;
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i(TAG, "onCreate: start");
+        toolbar = (Toolbar) findViewById(R.id.tl_custom);
+        initToolbar();
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
+    }
+
+    private void initToolbar(){
+        toolbar.setTitle(R.string.app_name);//设置Toolbar标题
+        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white)); //设置标题颜色
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_share:
+                ShowToast("上传");
+                startActivity(new Intent(this, ShareActivity.class));
+                finish();
+                break;
+            case R.id.menu_download:
+                ShowToast("下载");
+                startActivity(new Intent(this, DownloadActivity.class));
+                finish();
+                break;
+            case R.id.menu_serach:
+                ShowToast("搜索");
+                startActivity(new Intent(this, SearchActivity.class));
+                finish();
+                break;
+            default:
+        }
+        return true;
     }
 
     /**
@@ -29,4 +77,5 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+
 }

@@ -7,25 +7,25 @@ android {
         applicationId "bying.imageprotect"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 1//项目的版本号
+        versionName "1.0"//项目的版本名
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions"
             }
         }
-        ndk{
-            abiFilters 'armeabi', 'armeabi-v7a','x86'
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a', 'x86'
         }
-        sourceSets.main{
+        sourceSets.main {
             jniLibs.srcDir 'src/main/jniLibs' //set .so files directory to libs
             jni.srcDirs = [] //disable automatic ndk-build call
         }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled false//是否对代码进行混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -41,7 +41,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
     compile project(':openCVLibrary2411')
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    testCompile 'junit:junit:4.12'
 }

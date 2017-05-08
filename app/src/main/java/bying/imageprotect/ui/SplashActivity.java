@@ -13,7 +13,7 @@ public class SplashActivity extends Activity {
      * Called when the ui is first created.
      */
 
-    private final int SPLASH_DISPLAY_LENGHT = 2000;
+    private final int SPLASH_DISPLAY_LENGHT = 2500;//显示2.5秒
     private Handler handler;
 
     @Override
@@ -28,9 +28,9 @@ public class SplashActivity extends Activity {
 
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);//跳转
                 startActivity(intent);
-                SplashActivity.this.finish();
+                SplashActivity.this.finish();//关闭
             }
         }, SPLASH_DISPLAY_LENGHT);
 

@@ -128,7 +128,7 @@ public class FeatureDetector {
  *   <li> <code>"SimpleBlob"</code> -- "SimpleBlobDetector"
  * </ul>
  *
- * <p>Also a combined format is supported: feature detector adapter name
+ * <p>Also a combined format is supported: feature detector base name
  * (<code>"Grid"</code> -- "GridAdaptedFeatureDetector", <code>"Pyramid"</code>
  * -- "PyramidAdaptedFeatureDetector") + feature detector name (see above), for
  * example: <code>"GridFAST"</code>, <code>"PyramidSTAR"</code>.</p>
