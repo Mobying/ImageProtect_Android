@@ -20,6 +20,7 @@
             android:layout_gravity="center"/>
 
         <LinearLayout
+            android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -64,9 +65,26 @@
             android:layout_margin="@dimen/activity_vertical_margin"
             android:background="@drawable/btn_login_selector"
             android:gravity="center"
-            android:text="登录"
+            android:text="@string/login"
             android:textColor="#ffffff"
             android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/btn_login_main"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="暂不登录"
+            android:textColor="#489cfa"
+            android:textSize="22sp"/>
+
     </LinearLayout>
 
     <LinearLayout

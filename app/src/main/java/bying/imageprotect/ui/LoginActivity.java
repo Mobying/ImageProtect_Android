@@ -1,6 +1,7 @@
 package bying.imageprotect.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,27 +13,43 @@ import bying.imageprotect.base.BaseActivity;
 
 public class LoginActivity extends BaseActivity {
 //    @ViewInject(id=R.id.et_username)
-    private TextView username = (TextView) findViewById(R.id.et_username);
+    private TextView username;
 //    @ViewInject(id=R.id.et_password)
-    private TextView psd = (TextView) findViewById(R.id.et_password);
+    private TextView psd;
 //    @ViewInject(id=R.id.btn_login)
-    private Button btn_login = (Button) findViewById(R.id.btn_login);
+    private Button btn_login;
 //    @ViewInject(id = R.id.btn_register)
-    private TextView register = (TextView) findViewById(R.id.login_register);
+    private TextView register,btn_login_main;
     private String name,password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        username = (TextView) findViewById(R.id.et_username);
+        psd = (TextView) findViewById(R.id.et_password);
+        btn_login = (Button) findViewById(R.id.btn_login);
+        btn_login_main = (TextView) findViewById(R.id.btn_login_main);
+        register = (TextView) findViewById(R.id.login_register);
+
 //        FinalActivity.initInjectedView(this);//实现IOC注解组件
-//        register.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        btn_login_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         onClickLogin();
        // register();
     }
@@ -73,7 +90,7 @@ public class LoginActivity extends BaseActivity {
 //                // TODO Auto-generated method stub
 //                //更新用户的地理位置以及好友的资料，可自行到BaseActivity类中查看此方法的具体实现，建议添加
 //                //省略其他代码
-//                loginToMain();
+                loginToMain();
 //            }
 //
 //            @Override
@@ -83,12 +100,11 @@ public class LoginActivity extends BaseActivity {
 //            }
 //        });
     }
-
-//    private void loginToMain() {
-//        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-//        startActivity(intent);
-//        LoginActivity.this.finish();
-//    }
+    private void loginToMain() {
+        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        startActivity(intent);
+        LoginActivity.this.finish();
+    }
 //
 //    private void register(){
 //        register.setOnClickListener(new View.OnClickListener() {

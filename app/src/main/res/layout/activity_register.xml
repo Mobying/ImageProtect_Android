@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_marginTop="150dp"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <LinearLayout style="@style/Register_Input" >
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/tl_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/back_login"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:text="@string/register"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        style="@style/Register_Input"
+        android:layout_marginTop="30dp">
 
         <TextView
             style="@style/Smile.TextView._Black"
@@ -13,15 +49,15 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:text="账号"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/et_username"
             style="@style/Register_Edit"
-            android:hint="请输入用户名&#8230;" />
+            android:hint="请输入用户名&#8230;"/>
     </LinearLayout>
 
-    <LinearLayout style="@style/Register_Input" >
+    <LinearLayout style="@style/Register_Input">
 
         <TextView
             style="@style/Smile.TextView._Black"
@@ -29,17 +65,17 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:text="密码"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/et_password"
             style="@style/Register_Edit"
-            android:inputType="textPassword"
-            android:hint="请输入密码&#8230;" />
+            android:hint="请输入密码&#8230;"
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Register_Input" >
+        style="@style/Register_Input">
 
         <TextView
             style="@style/Smile.TextView._Black"
@@ -47,13 +83,13 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:text="确认密码"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/et_password_again"
             style="@style/Register_Edit"
-            android:inputType="textPassword"
-            android:hint="确认密码" />
+            android:hint="确认密码"
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <Button
@@ -64,5 +100,5 @@
         android:background="@drawable/btn_login_selector"
         android:text="注册"
         android:textColor="#ffffff"
-        android:textSize="18sp" />
+        android:textSize="18sp"/>
 </LinearLayout>

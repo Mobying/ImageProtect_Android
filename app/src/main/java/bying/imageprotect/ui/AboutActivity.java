@@ -15,6 +15,7 @@ public class AboutActivity extends LeftMenuBaseActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView nav;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +23,7 @@ public class AboutActivity extends LeftMenuBaseActivity {
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.about_draw);
         nav = (NavigationView) findViewById(R.id.nav_view);
+        loginListener(nav);
         navigationListener(nav,7);
         initToolbar();
         initLeftSlip(toolbar,mDrawerLayout);
@@ -31,7 +33,7 @@ public class AboutActivity extends LeftMenuBaseActivity {
         toolbar.setTitle(R.string.about);//设置Toolbar标题
         toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white)); //设置标题颜色
         setSupportActionBar(toolbar);
-       // getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setDisplayShowTitleEnabled(true);
     }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import bying.imageprotect.R;
 import bying.imageprotect.base.BaseActivity;
@@ -14,6 +15,7 @@ public class RegisterActivity extends BaseActivity {
 
     private EditText nickName,password01,password02;
     private Button btn_register;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,15 @@ public class RegisterActivity extends BaseActivity {
         //    @ViewInject(id=R.id.btn_register)
         btn_register = (Button) findViewById(R.id.btn_register);
 
+        back = (ImageView) findViewById(R.id.back_login);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+                finish();
+            }
+        });
+
         onClickRegister();
     }
 
@@ -36,10 +47,10 @@ public class RegisterActivity extends BaseActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                //register();
+                register();
+//                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+//                startActivity(intent);
+//                finish();
             }
         });
     }

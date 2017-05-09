@@ -19,6 +19,7 @@ import bying.imageprotect.R;
 import bying.imageprotect.ui.AboutActivity;
 import bying.imageprotect.ui.DownloadActivity;
 import bying.imageprotect.ui.FriendsActivity;
+import bying.imageprotect.ui.LoginActivity;
 import bying.imageprotect.ui.MainActivity;
 import bying.imageprotect.ui.SearchActivity;
 import bying.imageprotect.ui.SetActivity;
@@ -32,19 +33,39 @@ import bying.imageprotect.ui.ShareActivity;
 public class LeftMenuBaseActivity extends BaseActivity {
     //声明相关变量
     //    private NavigationView nav;
-    private TextView login, userid;
+//    private TextView login, userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        login = (TextView) findViewById(R.id.login);
-        userid = (TextView) findViewById(R.id.userid);
-        //        nav = (NavigationView) findViewById(R.id.nav_view);
-        //        initLeftSlip();//侧滑
-        //    //    initLogin();//登录
-        //        initClickEvents();//注册事件
+//        login = (TextView) findViewById(R.id.login);
+//        userid = (TextView) findViewById(R.id.userid);
+//        initLeftSlip();//侧滑
+//        initLogin();//登录
+//        initClickEvents();//注册事件
     }
+
+        public void loginListener(NavigationView nav) {
+            View headview = nav.getHeaderView(0);
+            TextView login = (TextView) headview.findViewById(R.id.login);
+    //        //        if (userManager.getCurrentUser() == null) {
+//            userid.setVisibility(View.GONE);
+//            login.setVisibility(View.VISIBLE);
+            login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getCurrentActivity(), LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+    //        } else {
+    //            userid.setVisibility(View.VISIBLE);
+    //            login.setVisibility(View.GONE);
+    //            userid.setText(userManager.getCurrentUser().getUsername());
+    //        }
 
     public void initLeftSlip(Toolbar toolbar, DrawerLayout mDrawerLayout) {
         //三行代码绑定DrawerLayout和NavigationView
@@ -199,24 +220,4 @@ public class LeftMenuBaseActivity extends BaseActivity {
         }
         return null;
     }
-
-    //    private void initLogin(){
-    //        if(userManager.getCurrentUser() == null) {
-    //            userid.setVisibility(View.GONE);
-    //            login.setVisibility(View.VISIBLE);
-    //        login.setOnClickListener(new View.OnClickListener() {
-    //            @Override
-    //            public void onClick(View v) {
-    //                Intent intent = new Intent(getCurrentActivity(), LoginActivity.class);
-    //                startActivity(intent);
-    //            }
-    //        });
-    //        }
-    //        else {
-    //            userid.setVisibility(View.VISIBLE);
-    //            login.setVisibility(View.GONE);
-    //            userid.setText(userManager.getCurrentUser().getUsername());
-    //        }
-    //    }
-
 }

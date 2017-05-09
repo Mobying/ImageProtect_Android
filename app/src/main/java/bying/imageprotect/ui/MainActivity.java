@@ -25,6 +25,7 @@ public class MainActivity extends LeftMenuBaseActivity {
     private Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView nav;
+    private TextView login;
 //    private ActionBarDrawerToggle mDrawerToggle;
     private static final String TAG = "MainActivity";
 
@@ -36,6 +37,8 @@ public class MainActivity extends LeftMenuBaseActivity {
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_draw);
         nav = (NavigationView) findViewById(R.id.nav_view);
+        login = (TextView) findViewById(R.id.login);
+        loginListener(nav);
         navigationListener(nav,1);
         initToolbar();
         initLeftSlip(toolbar,mDrawerLayout);
