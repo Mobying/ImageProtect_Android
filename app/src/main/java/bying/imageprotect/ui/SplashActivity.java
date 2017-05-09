@@ -33,6 +33,5 @@ public class SplashActivity extends Activity {
                 SplashActivity.this.finish();//关闭
             }
         }, SPLASH_DISPLAY_LENGHT);
-
     }
 }

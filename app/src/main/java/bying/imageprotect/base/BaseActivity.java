@@ -25,7 +25,7 @@ public class BaseActivity extends AppCompatActivity {
                 public void run() {
                     // TODO Auto-generated method stub
                     if (mToast == null) {
-                        mToast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                        mToast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                     } else {
                         mToast.setText(text);
                     }
@@ -41,7 +41,7 @@ public class BaseActivity extends AppCompatActivity {
             public void run() {
                 // TODO Auto-generated method stub
                 if (mToast == null) {
-                    mToast = Toast.makeText(BaseActivity.this.getApplicationContext(), resId, Toast.LENGTH_LONG);
+                    mToast = Toast.makeText(BaseActivity.this.getApplicationContext(), resId, Toast.LENGTH_SHORT);
                 } else {
                     mToast.setText(resId);
                 }

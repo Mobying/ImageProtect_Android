@@ -65,34 +65,34 @@ public class RegisterActivity extends BaseActivity {
         progress.setMessage("正在注册...");
         progress.setCanceledOnTouchOutside(false);
         progress.show();
-//        final User bu = new User();
-//        bu.setUsername(name);//昵称
-//        bu.setPassword(password);
-//        //将user和设备id进行绑定aa
-//        bu.setSex(true);
-//        bu.setDeviceType("android");
-//        bu.setInstallId(BmobInstallation.getInstallationId(this));
-//        bu.signUp(RegisterActivity.this, new SaveListener() {
-//            @Override
-//            public void onSuccess() {
-//                // TODO Auto-generated method stub
-//                progress.dismiss();
-//                ShowToast(R.string.toast_register_success);
-//                // 将设备与username进行绑定
-//                userManager.bindInstallationForRegister(bu.getUsername());
-//                // 启动主页
-//                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//
-//            @Override
-//            public void onFailure(int arg0, String arg1) {
-//                // TODO Auto-generated method stub
-//                BmobLog.i(arg1);
-//                ShowToast("注册失败:" + arg1);
-//                progress.dismiss();
-//            }
-//        });
+        //        final User bu = new User();
+        //        bu.setUsername(name);//昵称
+        //        bu.setPassword(password);
+        //        //将user和设备id进行绑定aa
+        //        bu.setSex(true);
+        //        bu.setDeviceType("android");
+        //        bu.setInstallId(BmobInstallation.getInstallationId(this));
+        //        bu.signUp(RegisterActivity.this, new SaveListener() {
+        //            @Override
+        //            public void onSuccess() {
+        //
+        //                progress.dismiss();
+        //                ShowToast(R.string.toast_register_success);
+        //                // 将设备与username进行绑定
+        //                userManager.bindInstallationForRegister(bu.getUsername());
+        //                // 启动主页
+        //                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+        //                startActivity(intent);
+        //                finish();
+        //            }
+        //
+        //            @Override
+        //            public void onFailure(int arg0, String arg1) {
+        //
+        //                BmobLog.i(arg1);
+        //                ShowToast("注册失败:" + arg1);
+        //                progress.dismiss();
+        //            }
+        //        });
     }
 }

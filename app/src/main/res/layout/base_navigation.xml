@@ -5,8 +5,9 @@
     android:id="@+id/nav_view"
     android:layout_width="250dp"
     android:layout_height="match_parent"
-    android:layout_gravity = "start"
+    android:layout_gravity="start"
     app:headerLayout="@layout/headlayout"
-    app:itemBackground="@color/white"
+    app:itemBackground="@drawable/left_simple_item_selector"
     app:menu="@menu/left_menu">
 </android.support.design.widget.NavigationView>
+

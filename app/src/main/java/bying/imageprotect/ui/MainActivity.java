@@ -2,7 +2,9 @@ package bying.imageprotect.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +23,9 @@ public class MainActivity extends LeftMenuBaseActivity {
     }
 
     private Toolbar toolbar;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView nav;
+//    private ActionBarDrawerToggle mDrawerToggle;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -29,7 +34,11 @@ public class MainActivity extends LeftMenuBaseActivity {
         setContentView(R.layout.activity_main);
         Log.i(TAG, "onCreate: start");
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_draw);
+        nav = (NavigationView) findViewById(R.id.nav_view);
+        navigationListener(nav,1);
         initToolbar();
+        initLeftSlip(toolbar,mDrawerLayout);
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
@@ -41,6 +50,7 @@ public class MainActivity extends LeftMenuBaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
     @Override
@@ -62,7 +72,7 @@ public class MainActivity extends LeftMenuBaseActivity {
                 startActivity(new Intent(this, DownloadActivity.class));
                 finish();
                 break;
-            case R.id.menu_serach:
+            case R.id.menu_search:
                 ShowToast("搜索");
                 startActivity(new Intent(this, SearchActivity.class));
                 finish();

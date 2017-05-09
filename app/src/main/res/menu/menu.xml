@@ -13,7 +13,7 @@
             android:id="@+id/menu_download"
             android:title="@string/download"/>
         <item
-            android:id="@+id/menu_serach"
+            android:id="@+id/menu_search"
             android:title="@string/search"/>
     </group>
 </menu>

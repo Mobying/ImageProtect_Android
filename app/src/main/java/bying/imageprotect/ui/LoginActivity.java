@@ -1,7 +1,6 @@
 package bying.imageprotect.ui;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -35,7 +34,7 @@ public class LoginActivity extends BaseActivity {
 //            }
 //        });
         onClickLogin();
-        register();
+       // register();
     }
 
     private void onClickLogin() {
@@ -85,20 +84,20 @@ public class LoginActivity extends BaseActivity {
 //        });
     }
 
-    private void loginToMain() {
-        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-        startActivity(intent);
-        LoginActivity.this.finish();
-    }
-
-    private void register(){
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
-            }
-        });
-    }
+//    private void loginToMain() {
+//        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+//        startActivity(intent);
+//        LoginActivity.this.finish();
+//    }
+//
+//    private void register(){
+//        register.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+//                startActivity(intent);
+//                LoginActivity.this.finish();
+//            }
+//        });
+//    }
 }
