@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/ImageProtect.iml" filepath="$PROJECT_DIR$/ImageProtect.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/openCVLibrary2411/openCVLibrary2411.iml" filepath="$PROJECT_DIR$/openCVLibrary2411/openCVLibrary2411.iml" />
+      <module fileurl="file://$PROJECT_DIR$/openCVSamplefacedetection/openCVSamplefacedetection.iml" filepath="$PROJECT_DIR$/openCVSamplefacedetection/openCVSamplefacedetection.iml" />
     </modules>
   </component>
 </project>

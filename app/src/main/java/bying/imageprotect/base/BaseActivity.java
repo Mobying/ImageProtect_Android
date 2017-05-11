@@ -16,7 +16,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    /*Toast提醒*/
+    /*封装Toast提醒*/
     Toast mToast;
     public void ShowToast(final String text) {
         if (!TextUtils.isEmpty(text)) {

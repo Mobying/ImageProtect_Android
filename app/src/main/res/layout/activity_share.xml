@@ -20,7 +20,68 @@
         <!--android:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
         <!--app:theme="@style/ThemeOverlay.AppCompat.ActionBar">-->
         <!--</android.support.v7.widget.Toolbar>-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/btn_selectImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="58dp"
+                android:background="@drawable/btn_selector"
+                android:text="选择图片"
+                android:textColor="@color/white"
+                android:textSize="18sp">
+            </Button>
+
+            <Button
+                android:id="@+id/btn_detectFace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="60dp"
+                android:background="@drawable/btn_selector"
+                android:text="人脸检测"
+                android:textColor="@color/white"
+                android:textSize="18sp">
+            </Button>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+
+                android:layout_gravity="center_horizontal"
+                android:scaleType="centerCrop">
+            </ImageView>
+
+            <!--<ImageView-->
+                <!--android:id="@+id/image2"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="150dp"-->
+                <!--android:layout_below="@id/btn_select_image"-->
+                <!--android:layout_weight="1"-->
+                <!--android:scaleType="centerCrop">-->
+            <!--</ImageView>-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/image3"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="150dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:scaleType="centerCrop">-->
+            <!--</ImageView>-->
+        </LinearLayout>
 
     </LinearLayout>
 

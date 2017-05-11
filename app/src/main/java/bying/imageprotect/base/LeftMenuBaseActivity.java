@@ -27,7 +27,7 @@ import bying.imageprotect.ui.ShareActivity;
 
 /**
  * Created by Wu_bying on 2017/5/8.
- * 侧滑菜单
+ * DrawerLayout + NavigationView + Login 点击监听的封装
  */
 
 public class LeftMenuBaseActivity extends BaseActivity {
@@ -188,6 +188,7 @@ public class LeftMenuBaseActivity extends BaseActivity {
     //            }
     //        });
     //    }
+
     /*得到当前的Activity*/
     public static Activity getCurrentActivity() {
         try {

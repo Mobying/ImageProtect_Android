@@ -9,10 +9,20 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
+# 支持 -std=gnu++11
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+
+# opencv import libs
 set(pathToOpenCV E:/OpenCV-2.4.11-android-sdk/OpenCV-android-sdk)
 include_directories( ${pathToOpenCV}/sdk/native/jni/include )
 add_library( lib_opencv SHARED IMPORTED )
-set_target_properties( lib_opencv PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/src/main/OpenCVLib/${ANDROID_ABI}/libopencv_java.so )
+set_target_properties( lib_opencv PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libopencv_java.so )
+
+#set(libs "${CMAKE_SOURCE_DIR}/src/main/jniLibs")
+#include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/include)
+#add_library(libopencv_java SHARED IMPORTED )cd
+#set_target_properties(libopencv_java PROPERTIES IMPORTED_LOCATION "${libs}/${ANDROID_ABI}/libopencv_java.so")
 
 add_library( # Sets the name of the library.
              native-lib
@@ -24,6 +34,7 @@ add_library( # Sets the name of the library.
              # Associated headers in the same location as their source
              # file are automatically included.
              src/main/cpp/native-lib.cpp )
+#add_library(jniOpenCV SHARED src/main/cpp/jniOpenCV.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because system libraries are included in the search path by
@@ -44,8 +55,13 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-lib
+                       #jniOpenCV
+
+                       #android log
+                       #libopencv_java
 
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib}
-                       ${OpenCV_LIBS})
+                       lib_opencv
+                       )

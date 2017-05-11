@@ -8,6 +8,9 @@
     android:layout_gravity="start"
     app:headerLayout="@layout/headlayout"
     app:itemBackground="@drawable/left_simple_item_selector"
-    app:menu="@menu/left_menu">
+    app:menu="@menu/left_menu"
+    >
 </android.support.design.widget.NavigationView>
 
+    <!--paddingTop是和内部容器的距离，layout_marginTop是和外部容器的距离-->
+    <!--start是左边，end是右边-->
