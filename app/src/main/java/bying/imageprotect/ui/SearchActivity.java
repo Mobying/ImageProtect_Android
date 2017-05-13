@@ -32,6 +32,7 @@ import java.io.InputStream;
 import bying.imageprotect.R;
 import bying.imageprotect.base.LeftMenuBaseActivity;
 
+
 public class SearchActivity extends LeftMenuBaseActivity {
 
     private Toolbar toolbar;
@@ -211,6 +212,7 @@ public class SearchActivity extends LeftMenuBaseActivity {
         }
     }
 
+
     public void initFaceDetect(){
         srcFace = srcImg.copy(Bitmap.Config.RGB_565, true);
         int w = srcFace.getWidth();
@@ -235,7 +237,7 @@ public class SearchActivity extends LeftMenuBaseActivity {
         //        }
     }
 
-    public void detectFace(){
+    public void detectFace(){//更多代码优化及解释请查看ShareActivity
         int nFace = faceDetector.findFaces(srcFace, face);
         ShowLog("检测到人脸：n = " + nFace);
 
@@ -251,8 +253,12 @@ public class SearchActivity extends LeftMenuBaseActivity {
             int dd = (int)(dis);
             Point eyeLeft = new Point((int)(midPoint.x - dis/2), (int)midPoint.y);
             Point eyeRight = new Point((int)(midPoint.x + dis/2), (int)midPoint.y);
-            Rect faceRect = new Rect((int)(midPoint.x - dd), (int)(midPoint.y - dd), (int)(midPoint.x + dd), (int)(midPoint.y + dd));
-            ShowLog("左眼坐标 x = " + eyeLeft.x + ", y = " + eyeLeft.y);
+            Rect faceRect = new Rect((int)(midPoint.x - 1.5*dd), (int)(midPoint.y - dd), (int)(midPoint.x + 1.5*dd), (int)(midPoint.y + 2*dd));
+            ShowLog("两眼间的距离："+ dd);
+            ShowLog("左眼坐标：x = " + eyeLeft.x + ", y = " + eyeLeft.y);
+            ShowLog("右眼坐标：x = " + eyeRight.x + ", y = " + eyeRight.y);
+            ShowLog("方框坐标：左上角 ( x = "+ faceRect.left + ", y = " + faceRect.top + ")");
+            ShowLog("方框坐标：右下角 ( x = " + faceRect.right + ", y = " + faceRect.bottom + ")");
             if(checkFace(faceRect)){
                 Canvas canvas = new Canvas(srcFace);
                 Paint p = new Paint();

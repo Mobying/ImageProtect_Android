@@ -2,8 +2,10 @@ package bying.imageprotect.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -12,11 +14,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.media.FaceDetector;
 import android.media.FaceDetector.Face;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,11 +31,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.InputStream;
 
 import bying.imageprotect.R;
-import bying.imageprotect.base.FaceDetectorBase;
+import bying.imageprotect.base.LeftMenuBaseActivity;
+
+//import android.graphics.Rect;
 
 /**
  * Bitmap是Android系统中的图像处理的最重要类之一。
@@ -42,7 +51,7 @@ import bying.imageprotect.base.FaceDetectorBase;
  * Mat即矩阵（Matrix）的缩写.
  */
 
-public class ShareActivity extends FaceDetectorBase {
+public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
@@ -50,67 +59,79 @@ public class ShareActivity extends FaceDetectorBase {
 
     //图像变量
     private double max_size = 1024;
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private ImageView image1, image2, image3;
-    private Bitmap srcImg = null;
+
+    public static final int CHOOSE_PHOTO = 2;
+    String imagePath = null;
+
+    private ImageView srcImage, openImage, privateImage;
+    private Bitmap srcBitmap = null;
     private Bitmap srcFace = null;
-    private Button selectImageBtn,detectFaceBtn;
-
-    private boolean state = false;//判断是否选择了图片
-
-    FaceDetector faceDetector = null;
-    FaceDetector.Face[] face;
-    final int N_MAX = 5;
-//    ProgressBar progressBar = null;
+    private Button selectImageBtn, detectFaceBtn, cutImageBtn, aesBtn, shareBtn;
+    private int state = 0;//判断做了什么操作
+    //人脸检测
+    FaceDetector faceDetector = null;//人脸识别类的实例
+    FaceDetector.Face[] face; //存储多张人脸的数组变量
+    final int N_MAX = 5;//最多检测人脸数
     ProgressDialog progress;
+    //ProgressBar progressBar = null;
+    Face f;
+    PointF midPoint;
+    float dis;//两眼间的距离
+    int dd;//两眼间距离的整数化
+    Point eyeLeft, eyeRight;
+    android.graphics.Rect faceRect;
 
-//    Thread checkFaceThread = new Thread(){
-//
-//        @Override
-//        public void run() {
-//            // TODO Auto-generated method stub
-//            Bitmap faceBitmap = detectFace();
-//            mainHandler.sendEmptyMessage(2);
-//            Message m = new Message();
-//            m.what = 0;
-//            m.obj = faceBitmap;
-//            mainHandler.sendMessage(m);
-//
-//        }
-//
-//    };
-//    Handler mainHandler = new Handler(){
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            // TODO Auto-generated method stub
-//            //super.handleMessage(msg);
-//            switch (msg.what){
-//                case 0:
-//                    Bitmap b = (Bitmap) msg.obj;
-//                    image1.setImageBitmap(b);
-//                    ShowToast("检测完毕");
-//                    break;
-//                case 1:
-//                    progress = new ProgressDialog(ShareActivity.this);
-//                    progress.setMessage("正在检测...");
-//                    progress.setCanceledOnTouchOutside(false);
-//                    progress.show();
-////                    showProcessBar();
-//                    break;
-//                case 2:
-////                    progressBar.setVisibility(View.GONE);
-//                    progress.dismiss();
-////                    detectFaceBtn.setClickable(false);
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//
-//    };
+    //图像切割变量
+    Mat srcMat, dstMat, ropMat, mask;
+    Bitmap ropBitmap;
 
 
+    //    Thread checkFaceThread = new Thread(){
+    //
+    //        @Override
+    //        public void run() {
+    //            // TODO Auto-generated method stub
+    //            Bitmap faceBitmap = detectFace();
+    //            mainHandler.sendEmptyMessage(2);
+    //            Message m = new Message();
+    //            m.what = 0;
+    //            m.obj = faceBitmap;
+    //            mainHandler.sendMessage(m);
+    //
+    //        }
+    //
+    //    };
+
+    //    Handler mainHandler = new Handler(){
+    //
+    //        @Override
+    //        public void handleMessage(Message msg) {
+    //            // TODO Auto-generated method stub
+    //            //super.handleMessage(msg);
+    //            switch (msg.what){
+    //                case 0:
+    //                    Bitmap b = (Bitmap) msg.obj;
+    //                    image1.setImageBitmap(b);
+    //                    ShowToast("检测完毕");
+    //                    break;
+    //                case 1:
+    //                    progress = new ProgressDialog(ShareActivity.this);
+    //                    progress.setMessage("正在检测...");
+    //                    progress.setCanceledOnTouchOutside(false);
+    //                    progress.show();
+    ////                    showProcessBar();
+    //                    break;
+    //                case 2:
+    ////                    progressBar.setVisibility(View.GONE);
+    //                    progress.dismiss();
+    ////                    detectFaceBtn.setClickable(false);
+    //                    break;
+    //                default:
+    //                    break;
+    //            }
+    //        }
+    //
+    //    };
 
 
     @Override
@@ -129,55 +150,27 @@ public class ShareActivity extends FaceDetectorBase {
 
         //图像处理
         staticLoadCVLibraries();
-        image1 = (ImageView) findViewById(R.id.image1);
+        srcImage = (ImageView) findViewById(R.id.image1);
+        privateImage = (ImageView) findViewById(R.id.ropImage);
         //        image2 = (ImageView) findViewById(R.id.image2);
         //        image3 = (ImageView) findViewById(R.id.image3);
 
         selectImageBtn = (Button) findViewById(R.id.btn_selectImage);
-        selectImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // makeText(MainActivity.this.getApplicationContext(), "start to browser image", Toast.LENGTH_SHORT).show();
-
-                if (ContextCompat.checkSelfPermission(ShareActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ShareActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                } else {
-                    ShowToast("打开相册");
-                    selectImage();
-
-                }
-            }
-        });
-
-//        initUI();
-
         detectFaceBtn = (Button) findViewById(R.id.btn_detectFace);
-        detectFaceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cutImageBtn = (Button) findViewById(R.id.btn_cutImage);
+        shareBtn = (Button) findViewById(R.id.btn_share);
+        aesBtn = (Button) findViewById(R.id.btn_aes);
 
-                // makeText(MainActivity.this.getApplicationContext(), "hello, image process", Toast.LENGTH_SHORT).show();
-                if (!state)
-                    ShowToast("请选择照片");
-                else {
-                    initFaceDetect();
-                    progress = new ProgressDialog(ShareActivity.this);
-                    progress.setMessage("正在检测...");
-                    progress.setCanceledOnTouchOutside(false);
-                    progress.show();
-
-                    detectFace();
-//                    Bitmap faceBitmap = detectFace();
-//                    image1.setImageBitmap(faceBitmap);
-
-//                    mainHandler.sendEmptyMessage(1);
-//                    checkFaceThread.start();
-                    //                    convertGray();
-//                    Utils.matToBitmap(faceDetect(srcImg), srcImg);
-//                    image1.setImageBitmap(srcImg);
-                }
-            }
-        });
+        selectImageBtn.setOnClickListener(this);
+        selectImageBtn.setTag(1);
+        detectFaceBtn.setOnClickListener(this);
+        detectFaceBtn.setTag(2);
+        cutImageBtn.setOnClickListener(this);
+        cutImageBtn.setTag(3);
+        aesBtn.setOnClickListener(this);
+        aesBtn.setTag(4);
+        shareBtn.setOnClickListener(this);
+        shareBtn.setTag(5);
     }
 
     private void initToolbar() {
@@ -187,6 +180,50 @@ public class ShareActivity extends FaceDetectorBase {
         getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //        getSupportActionBar().setDisplayShowTitleEnabled(true);
+    }
+
+    public void onClick(View v) {
+        int tag = (Integer) v.getTag();
+        switch (tag) {
+            case 1:
+                if (ContextCompat.checkSelfPermission(ShareActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ShareActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
+                } else {
+                    selectImage();
+                    ShowToast("打开相册");
+                }
+                break;
+            case 2:
+                if (state != 1)
+                    ShowToast("请选择照片");
+                else {
+                    initFaceDetect();
+                    progress = new ProgressDialog(ShareActivity.this);
+                    progress.setMessage("正在检测...");
+                    progress.setCanceledOnTouchOutside(false);
+                    progress.show();
+                    detectFace();
+                    // mainHandler.sendEmptyMessage(1);
+                    // checkFaceThread.start();
+                    // convertGray();
+                }
+                break;
+            case 3:
+                if (state != 2)
+                    ShowToast("请先进行人脸检测");
+                else {
+                    cutImage();
+//                    state = 3;
+                }
+                break;
+            //            case 4:
+            //                break;
+            //            case 5:
+            //                break;
+            default:
+                break;
+
+        }
     }
 
     //OpenCV库静态加载并初始化
@@ -200,24 +237,23 @@ public class ShareActivity extends FaceDetectorBase {
 
     //打开相册选择图片
     private void selectImage() {
-        Intent intent = new Intent();
+        Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "选择图像..."), PICK_IMAGE_REQUEST);
+        startActivityForResult(intent, CHOOSE_PHOTO); // 打开相册
     }
 
     //灰度化
-//    private void convertGray() {
-//        Mat src = new Mat();
-//        Mat temp = new Mat();
-//        Mat dst = new Mat();
-//        Utils.bitmapToMat(bitmap1, src);
-//        Imgproc.cvtColor(src, temp, Imgproc.COLOR_BGRA2BGR);//从RGB或BGR图像中删除alpha通道
-//        Log.i("CV", "image type:" + (temp.type() == CvType.CV_8UC3));
-//        Imgproc.cvtColor(temp, dst, Imgproc.COLOR_BGR2GRAY);
-//        Utils.matToBitmap(dst, bitmap1);
-//        image1.setImageBitmap(bitmap1);
-//    }
+    //    private void convertGray() {
+    //        Mat src = new Mat();
+    //        Mat temp = new Mat();
+    //        Mat dst = new Mat();
+    //        Utils.bitmapToMat(bitmap1, src);
+    //        Imgproc.cvtColor(src, temp, Imgproc.COLOR_BGRA2BGR);//从RGB或BGR图像中删除alpha通道
+    //        Log.i("CV", "image type:" + (temp.type() == CvType.CV_8UC3));
+    //        Imgproc.cvtColor(temp, dst, Imgproc.COLOR_BGR2GRAY);
+    //        Utils.matToBitmap(dst, bitmap1);
+    //        image1.setImageBitmap(bitmap1);
+    //    }
 
     //访问权限
     @Override
@@ -237,17 +273,18 @@ public class ShareActivity extends FaceDetectorBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            state = true;
+        if (requestCode == CHOOSE_PHOTO && resultCode == RESULT_OK) {
+            state = 1;
+            handleImageOnKitKat(data);
         }
         //        if(requestCode > PICK_IMAGE_REQUEST){
         //            ShowToast("最多选择"+PICK_IMAGE_REQUEST+"张");
         //        }
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri uri = data.getData();
+        if (requestCode == CHOOSE_PHOTO && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
             try {
                 Log.d("image-tag", "start to decode selected image now...");
-                InputStream input = getContentResolver().openInputStream(uri);
+                InputStream input = getContentResolver().openInputStream(imageUri);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeStream(input, null, options);
@@ -268,9 +305,10 @@ public class ShareActivity extends FaceDetectorBase {
                 options.inSampleSize = inSampleSize;
                 options.inJustDecodeBounds = false;
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                srcImg = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
+                srcBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri), null, options);
 
-                image1.setImageBitmap(srcImg);
+                srcImage.setImageBitmap(srcBitmap);
+                privateImage.setVisibility(View.GONE);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -278,109 +316,182 @@ public class ShareActivity extends FaceDetectorBase {
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-//    public void initUI(){
-//
-//        detectFaceBtn = (Button)findViewById(R.id.btn_detect_face);
-//        LayoutParams params = image1.getLayoutParams();
-//        DisplayMetrics dm = getResources().getDisplayMetrics();
-//        int w_screen = dm.widthPixels;
-//        //		int h = dm.heightPixels;
-//
-//        srcImg = bitmap1;
-//        int h = srcImg.getHeight();
-//        int w = srcImg.getWidth();
-//        float r = (float)h/(float)w;
-//        params.width = w_screen;
-//        params.height = (int)(params.width * r);
-//        image1.setLayoutParams(params);
-//        image1.setImageBitmap(srcImg);
+    private void handleImageOnKitKat(Intent data) {
+        imagePath = null;
+        Uri uri = data.getData();
+        Log.d("TAG", "handleImageOnKitKat: uri is " + uri);
+        if (DocumentsContract.isDocumentUri(this, uri)) {
+            // 如果是document类型的Uri，则通过document id处理
+            String docId = DocumentsContract.getDocumentId(uri);
+            if("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                String id = docId.split(":")[1]; // 解析出数字格式的id
+                String selection = MediaStore.Images.Media._ID + "=" + id;
+                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                imagePath = getImagePath(contentUri, null);
+            }
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            // 如果是content类型的Uri，则使用普通方式处理
+            imagePath = getImagePath(uri, null);
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            // 如果是file类型的Uri，直接获取图片路径即可
+            imagePath = uri.getPath();
+        }
+//        displayImage(imagePath); // 根据图片路径显示图片
+    }
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        // 通过Uri和selection来获取真实的图片路径
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+
+//    private void displayImage(String imagePath) {
+//        if (imagePath != null) {
+//            srcBitmap = BitmapFactory.decodeFile(imagePath);
+//            srcImage.setImageBitmap(srcBitmap);
+//        } else {
+//            ShowToast("找不到图片");
+//        }
 //    }
 
-    public void initFaceDetect(){
-        srcFace = srcImg.copy(Config.RGB_565, true);
+
+    public void initFaceDetect() {
+        srcFace = srcBitmap.copy(Config.RGB_565, true);
         int w = srcFace.getWidth();
         int h = srcFace.getHeight();
-        ShowLog("待检测图像: w = " + w + "h = " + h);
+        ShowLog("待检测图像: w = " + w + ", h = " + h);
         faceDetector = new FaceDetector(w, h, N_MAX);
         face = new FaceDetector.Face[N_MAX];
     }
-    public boolean checkFace(Rect rect){
+
+    public boolean checkFace(android.graphics.Rect rect) {//判断人脸像素
         int w = rect.width();
         int h = rect.height();
-        int s = w*h;
+        int s = w * h;
         ShowLog("人脸 宽 w = " + w + ", 高 h = " + h + ", 人脸面积 s = " + s);
-//        if(s < 10000){
-//            ShowLog("无效人脸，舍弃.");
-//            return false;
-//        }
-//        else{
-//            ShowLog("有效人脸，保存.");
-            return true;
-//        }
+        //        if(s < 10000){
+        //            ShowLog("无效人脸，舍弃.");
+        //            return false;
+        //        }
+        //        else{
+        //            ShowLog("有效人脸，保存.");
+        return true;
+        //        }
     }
-    public void detectFace(){
+
+    public void detectFace() {
         //		Drawable d = getResources().getDrawable(R.drawable.face_2);
         //		Log.i(tag, "Drawable尺寸 w = " + d.getIntrinsicWidth() + "h = " + d.getIntrinsicHeight());
         //		BitmapDrawable bd = (BitmapDrawable)d;
         //		Bitmap srcFace = bd.getBitmap();
 
         int nFace = faceDetector.findFaces(srcFace, face);
-        if(nFace==0) {
+        if (nFace == 0) {
             ShowToast("未检测到人脸");
+            progress.dismiss();
             return;
         }
-        ShowLog("检测到人脸：n = " + nFace);
-        for(int i=0; i<nFace; i++){
-            Face f  = face[i];
-            PointF midPoint = new PointF();
-            float dis = f.eyesDistance();
-            f.getMidPoint(midPoint);
-            int dd = (int)(dis);
-            Point eyeLeft = new Point((int)(midPoint.x - dis/2), (int)midPoint.y);
-            Point eyeRight = new Point((int)(midPoint.x + dis/2), (int)midPoint.y);
-            Rect faceRect = new Rect((int)(midPoint.x - dd), (int)(midPoint.y - dd), (int)(midPoint.x + dd), (int)(midPoint.y + dd));
-            ShowLog("左眼坐标 x = " + eyeLeft.x + ", y = " + eyeLeft.y);
-            if(checkFace(faceRect)){
+        ShowLog("检测到" + nFace + "张人脸");
+        for (int i = 0; i < nFace; i++) {
+            f = face[i];
+            midPoint = new PointF();
+            dis = f.eyesDistance();//两眼间的距离
+            f.getMidPoint(midPoint);//两眼间中心点
+            dd = (int) (dis);//两眼间距离的整数化
+            eyeLeft = new Point((int) (midPoint.x - dis / 2), (int) midPoint.y);
+            eyeRight = new Point((int) (midPoint.x + dis / 2), (int) midPoint.y);
+            //以两眼间距离为基本单位，得到宽度为3倍眼距的正方形矩阵
+            faceRect = new android.graphics.Rect((int) (midPoint.x - 1.5 * dd), (int) (midPoint.y - dd), (int) (midPoint.x + 1.5 * dd), (int) (midPoint.y + 2 * dd));
+
+            //安卓的Rect和OpenCV的Rect是不一样的两个类
+            //org.opencv.core.Rect da = new org.opencv.core.Rect();
+
+            //输出Log信息以便查看
+            ShowLog("midPoint:x = " + midPoint.x + ", y = " + midPoint.y);
+            ShowLog("两眼间的距离：" + dd);
+            ShowLog("左眼坐标：x = " + eyeLeft.x + ", y = " + eyeLeft.y);
+            ShowLog("右眼坐标：x = " + eyeRight.x + ", y = " + eyeRight.y);
+            ShowLog("方框坐标：左上角 ( x = " + faceRect.left + ", y = " + faceRect.top + ")");
+            ShowLog("方框坐标：右下角 ( x = " + faceRect.right + ", y = " + faceRect.bottom + ")");
+            //画图：canvas画布、paint画笔
+            if (checkFace(faceRect)) {
                 Canvas canvas = new Canvas(srcFace);
                 Paint p = new Paint();
-                p.setAntiAlias(true);
-                p.setStrokeWidth(8);
-                p.setStyle(Paint.Style.STROKE);
-                p.setColor(Color.GREEN);
-//                canvas.drawCircle(eyeLeft.x, eyeLeft.y, 20, p);
-//                canvas.drawCircle(eyeRight.x, eyeRight.y, 20, p);
+                p.setAntiAlias(true);//设置画笔锯齿效果
+                p.setStrokeWidth(8);//设置边框的宽度
+                p.setStyle(Paint.Style.STROKE);//空心
+                p.setColor(Color.GREEN);//颜色
+                //画出圆形的左右眼
+                //canvas.drawCircle(eyeLeft.x, eyeLeft.y, 20, p);
+                //canvas.drawCircle(eyeRight.x, eyeRight.y, 20, p);
+                //画出人脸框
                 canvas.drawRect(faceRect, p);
             }
 
+
         }
-//        ImageUtil.saveJpeg(srcFace);
-//        ShowLog("保存完毕");
+        //        ImageUtil.saveJpeg(srcFace);
+        //        ShowLog("保存完毕");
 
         //将绘制完成后的faceBitmap返回
         ShowToast("检测完毕");
         progress.dismiss();
-//        return srcFace;
-//        Bitmap faceBitmap = detectFace();
-        image1.setImageBitmap(srcFace);
+        //        return srcFace;
+        //        Bitmap faceBitmap = detectFace();
+        //        ShowLog(test.col,test.row);
+        srcImage.setImageBitmap(srcFace);
+        state = 2;
+        //        Mat test = image1(Rect());
 
     }
-//    public void showProcessBar(){
-//        RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.share_draw);
-//        progressBar = new ProgressBar(ShareActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-//        params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-//        progressBar.setVisibility(View.VISIBLE);
-//        //progressBar.setLayoutParams(params);
-//        mainLayout.addView(progressBar, params);
-//
-//    }
 
+    //    public void showProcessBar(){
+    //        RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.share_draw);
+    //        progressBar = new ProgressBar(ShareActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+    //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    //        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+    //        params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+    //        progressBar.setVisibility(View.VISIBLE);
+    //        //progressBar.setLayoutParams(params);
+    //        mainLayout.addView(progressBar, params);
+    //
+    //    }
+    public void cutImage() {
+        Mat temp = new Mat();
+        srcMat = new Mat();
+        //Util中temp会释放掉，所以得有个中转
+        Utils.bitmapToMat(srcBitmap,temp);
+        //从图像中删除alpha通道
+        Imgproc.cvtColor(temp,srcMat,Imgproc.COLOR_BGRA2BGR);
+        //感兴趣区域，即人脸检测的隐私区域
+        Rect ropRect = new Rect(faceRect.left, faceRect.top, 3*dd, 3*dd);
+        temp = new Mat(srcMat,ropRect);
+        ropMat = new Mat();//ROP矩阵
+        //加回alpha通道，不然切割后呈现的不是原图
+        Imgproc.cvtColor(temp,ropMat,Imgproc.COLOR_BGR2BGRA);
+        //创建一个和隐私区域大小一样的位图
+        ropBitmap =Bitmap.createBitmap( ropMat.width(),ropMat.height(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(temp,ropBitmap);
+        //之前重选照片的时候把ropImageView设为不可见，这里重新设为可见
+        privateImage.setVisibility(View.VISIBLE);
+        privateImage.setImageBitmap(ropBitmap);//切割后的人脸图像
+
+//        mask = Mat.ones(srcMat.size(),CV_8UC1);//掩模
+//        temp = new Mat(mask,ropRect);
+//        temp.copyTo(0,mask);
+
+        state = 3;
+        ShowLog(ropMat.cols());
+
+    }
 
 }

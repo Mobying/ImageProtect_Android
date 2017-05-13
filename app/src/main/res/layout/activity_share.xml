@@ -30,9 +30,9 @@
                 android:id="@+id/btn_selectImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="58dp"
+                android:layout_marginLeft="85dp"
                 android:background="@drawable/btn_selector"
-                android:text="选择图片"
+                android:text="1.选择图片"
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </Button>
@@ -42,26 +42,75 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="60dp"
+                android:layout_marginRight="85dp"
                 android:background="@drawable/btn_selector"
-                android:text="人脸检测"
+                android:text="2.人脸检测"
                 android:textColor="@color/white"
                 android:textSize="18sp">
+            </Button>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cutImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/btn_selector"
+                android:text="3.图像切割"
+                android:textColor="@color/white"
+                android:textSize="18sp">
+            </Button>
+
+            <Button
+                android:id="@+id/btn_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/btn_selector"
+                android:text="5.上传"
+                android:textColor="@color/white"
+                android:textSize="18sp">
+            </Button>
+
+            <Button
+                android:id="@+id/btn_aes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_selector"
+                android:text="4.AES加密"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:layout_centerHorizontal="true">
             </Button>
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/image1"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_marginLeft="20dp"
+                android:scaleType="centerCrop">
+            </ImageView>
 
-                android:layout_gravity="center_horizontal"
+            <ImageView
+                android:id="@+id/ropImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop">
             </ImageView>
 

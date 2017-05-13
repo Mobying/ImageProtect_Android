@@ -57,4 +57,9 @@ public class BaseActivity extends AppCompatActivity {
     public void ShowLog(String msg) {
         Log.i("bying", msg);
     }
+
+    public void ShowLog(int msg){
+        String tmp = Integer.toString(msg);
+        Log.i("bying",tmp);
+    }
 }
