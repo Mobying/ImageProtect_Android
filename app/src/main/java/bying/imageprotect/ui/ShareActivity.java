@@ -34,7 +34,6 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.InputStream;
 
@@ -466,28 +465,28 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
     //
     //    }
     public void cutImage() {
-        Mat temp = new Mat();
+//        Mat temp = new Mat();
         srcMat = new Mat();
         //Util中temp会释放掉，所以得有个中转
-        Utils.bitmapToMat(srcBitmap,temp);
+        Utils.bitmapToMat(srcBitmap,srcMat);
         //从图像中删除alpha通道
-        Imgproc.cvtColor(temp,srcMat,Imgproc.COLOR_BGRA2BGR);
+//        Imgproc.cvtColor(temp,srcMat,Imgproc.COLOR_BGRA2BGR);
         //感兴趣区域，即人脸检测的隐私区域
         Rect ropRect = new Rect(faceRect.left, faceRect.top, 3*dd, 3*dd);
-        temp = new Mat(srcMat,ropRect);
-        ropMat = new Mat();//ROP矩阵
+        ropMat = new Mat(srcMat,ropRect);
+//        ropMat = new Mat();//ROP矩阵
         //加回alpha通道，不然切割后呈现的不是原图
-        Imgproc.cvtColor(temp,ropMat,Imgproc.COLOR_BGR2BGRA);
+//        Imgproc.cvtColor(temp,ropMat,Imgproc.COLOR_BGR2BGRA);
         //创建一个和隐私区域大小一样的位图
         ropBitmap =Bitmap.createBitmap( ropMat.width(),ropMat.height(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(temp,ropBitmap);
+        Utils.matToBitmap(ropMat,ropBitmap);
         //之前重选照片的时候把ropImageView设为不可见，这里重新设为可见
         privateImage.setVisibility(View.VISIBLE);
         privateImage.setImageBitmap(ropBitmap);//切割后的人脸图像
 
 //        mask = Mat.ones(srcMat.size(),CV_8UC1);//掩模
-//        temp = new Mat(mask,ropRect);
-//        temp.copyTo(0,mask);
+//        temp = new Mat(srcMat,ropRect);
+//        temp.copyTo(temp,mask);
 
         state = 3;
         ShowLog(ropMat.cols());
