@@ -35,6 +35,23 @@ public class BaseActivity extends AppCompatActivity {
 
         }
     }
+    public void ShowToastLong(final String text) {
+        if (!TextUtils.isEmpty(text)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (mToast == null) {
+                        mToast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                    } else {
+                        mToast.setText(text);
+                    }
+                    mToast.show();
+                }
+            });
+
+        }
+    }
     public void ShowToast(final int resId) {
         runOnUiThread(new Runnable() {
             @Override
@@ -42,6 +59,20 @@ public class BaseActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if (mToast == null) {
                     mToast = Toast.makeText(BaseActivity.this.getApplicationContext(), resId, Toast.LENGTH_SHORT);
+                } else {
+                    mToast.setText(resId);
+                }
+                mToast.show();
+            }
+        });
+    }
+    public void ShowToastLong(final int resId) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                if (mToast == null) {
+                    mToast = Toast.makeText(BaseActivity.this.getApplicationContext(), resId, Toast.LENGTH_LONG);
                 } else {
                     mToast.setText(resId);
                 }

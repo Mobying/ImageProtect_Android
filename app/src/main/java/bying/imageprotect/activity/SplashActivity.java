@@ -1,4 +1,4 @@
-package bying.imageprotect.ui;
+package bying.imageprotect.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import bying.imageprotect.R;
 
 public class SplashActivity extends Activity {
     /**
-     * Called when the ui is first created.
+     * Called when the activity is first created.
      */
 
     private final int SPLASH_DISPLAY_LENGHT = 2500;//显示2.5秒

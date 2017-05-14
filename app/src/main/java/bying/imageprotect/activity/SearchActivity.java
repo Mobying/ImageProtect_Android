@@ -1,4 +1,4 @@
-package bying.imageprotect.ui;
+package bying.imageprotect.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;

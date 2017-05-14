@@ -1,4 +1,4 @@
-package bying.imageprotect.ui;
+package bying.imageprotect.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;

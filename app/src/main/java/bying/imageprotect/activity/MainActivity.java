@@ -1,4 +1,4 @@
-package bying.imageprotect.ui;
+package bying.imageprotect.activity;
 
 import android.content.Intent;
 import android.os.Bundle;

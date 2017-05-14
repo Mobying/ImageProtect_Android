@@ -16,14 +16,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import bying.imageprotect.R;
-import bying.imageprotect.ui.AboutActivity;
-import bying.imageprotect.ui.DownloadActivity;
-import bying.imageprotect.ui.FriendsActivity;
-import bying.imageprotect.ui.LoginActivity;
-import bying.imageprotect.ui.MainActivity;
-import bying.imageprotect.ui.SearchActivity;
-import bying.imageprotect.ui.SetActivity;
-import bying.imageprotect.ui.ShareActivity;
+import bying.imageprotect.activity.AboutActivity;
+import bying.imageprotect.activity.DownloadActivity;
+import bying.imageprotect.activity.FriendsActivity;
+import bying.imageprotect.activity.LoginActivity;
+import bying.imageprotect.activity.MainActivity;
+import bying.imageprotect.activity.SearchActivity;
+import bying.imageprotect.activity.SetActivity;
+import bying.imageprotect.activity.ShareActivity;
 
 /**
  * Created by Wu_bying on 2017/5/8.

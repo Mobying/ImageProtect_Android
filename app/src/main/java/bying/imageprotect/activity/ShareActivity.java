@@ -1,4 +1,4 @@
-package bying.imageprotect.ui;
+package bying.imageprotect.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -34,11 +34,17 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import bying.imageprotect.R;
 import bying.imageprotect.base.LeftMenuBaseActivity;
+import bying.imageprotect.util.AES256Util;
+import bying.imageprotect.util.BytesToHex;
+
+import static org.opencv.core.CvType.CV_8UC1;
 
 //import android.graphics.Rect;
 
@@ -186,7 +192,7 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
         switch (tag) {
             case 1:
                 if (ContextCompat.checkSelfPermission(ShareActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ShareActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
+                    ActivityCompat.requestPermissions(ShareActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 } else {
                     selectImage();
                     ShowToast("打开相册");
@@ -212,11 +218,17 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
                     ShowToast("请先进行人脸检测");
                 else {
                     cutImage();
-//                    state = 3;
+                    //state = 3;
                 }
                 break;
-            //            case 4:
-            //                break;
+            case 4:
+                if (state != 3)
+                    ShowToast("请先进行图像切割");
+                else {
+                    aes256();
+                    //state = 4;
+                }
+                break;
             //            case 5:
             //                break;
             default:
@@ -273,6 +285,7 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CHOOSE_PHOTO && resultCode == RESULT_OK) {
+            srcImage.setVisibility(View.VISIBLE);
             state = 1;
             handleImageOnKitKat(data);
         }
@@ -322,7 +335,7 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
         if (DocumentsContract.isDocumentUri(this, uri)) {
             // 如果是document类型的Uri，则通过document id处理
             String docId = DocumentsContract.getDocumentId(uri);
-            if("com.android.providers.media.documents".equals(uri.getAuthority())) {
+            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 String id = docId.split(":")[1]; // 解析出数字格式的id
                 String selection = MediaStore.Images.Media._ID + "=" + id;
                 imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
@@ -337,7 +350,7 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
             // 如果是file类型的Uri，直接获取图片路径即可
             imagePath = uri.getPath();
         }
-//        displayImage(imagePath); // 根据图片路径显示图片
+        //        displayImage(imagePath); // 根据图片路径显示图片
     }
 
     private String getImagePath(Uri uri, String selection) {
@@ -353,14 +366,14 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
         return path;
     }
 
-//    private void displayImage(String imagePath) {
-//        if (imagePath != null) {
-//            srcBitmap = BitmapFactory.decodeFile(imagePath);
-//            srcImage.setImageBitmap(srcBitmap);
-//        } else {
-//            ShowToast("找不到图片");
-//        }
-//    }
+    //    private void displayImage(String imagePath) {
+    //        if (imagePath != null) {
+    //            srcBitmap = BitmapFactory.decodeFile(imagePath);
+    //            srcImage.setImageBitmap(srcBitmap);
+    //        } else {
+    //            ShowToast("找不到图片");
+    //        }
+    //    }
 
 
     public void initFaceDetect() {
@@ -464,33 +477,63 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
     //        mainLayout.addView(progressBar, params);
     //
     //    }
-    public void cutImage() {
-//        Mat temp = new Mat();
+    public void cutImage() {//优化后的简洁版
         srcMat = new Mat();
-        //Util中temp会释放掉，所以得有个中转
-        Utils.bitmapToMat(srcBitmap,srcMat);
-        //从图像中删除alpha通道
-//        Imgproc.cvtColor(temp,srcMat,Imgproc.COLOR_BGRA2BGR);
+        Utils.bitmapToMat(srcBitmap, srcMat);
+        //dstMat = srcMat.clone();
         //感兴趣区域，即人脸检测的隐私区域
-        Rect ropRect = new Rect(faceRect.left, faceRect.top, 3*dd, 3*dd);
-        ropMat = new Mat(srcMat,ropRect);
-//        ropMat = new Mat();//ROP矩阵
-        //加回alpha通道，不然切割后呈现的不是原图
-//        Imgproc.cvtColor(temp,ropMat,Imgproc.COLOR_BGR2BGRA);
+        Rect ropRect = new Rect(faceRect.left, faceRect.top, 3 * dd, 3 * dd);
+        ropMat = new Mat(srcMat, ropRect);//ROP矩阵
+        //Imgproc.cvtColor(temp,ropMat,Imgproc.COLOR_BGR2BGRA);
         //创建一个和隐私区域大小一样的位图
-        ropBitmap =Bitmap.createBitmap( ropMat.width(),ropMat.height(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(ropMat,ropBitmap);
+        ropBitmap = Bitmap.createBitmap(ropMat.width(), ropMat.height(),
+                Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(ropMat, ropBitmap);
         //之前重选照片的时候把ropImageView设为不可见，这里重新设为可见
         privateImage.setVisibility(View.VISIBLE);
         privateImage.setImageBitmap(ropBitmap);//切割后的人脸图像
 
-//        mask = Mat.ones(srcMat.size(),CV_8UC1);//掩模
-//        temp = new Mat(srcMat,ropRect);
-//        temp.copyTo(temp,mask);
+        Scalar s = new Scalar(0);
+        mask = Mat.ones(ropMat.size(), CV_8UC1);//全0掩模
+        //Mat tempMat = new Mat(dstMat,ropRect);
+        ropMat.setTo(s, mask);
+        //Utils.matToBitmap(dstMat, srcBitmap);
+        Utils.matToBitmap(srcMat, srcBitmap);
+        //srcImage.setVisibility(View.GONE);
+        //openImage = (ImageView) findViewById(R.id.image1);
+        //openImage.setImageBitmap(srcBitmap);
+        srcImage.setImageBitmap(srcBitmap);//切割后的公开图像
 
         state = 3;
         ShowLog(ropMat.cols());
+    }
 
+    public void aes256() {
+        //将rop区域的bitmap转变为bytes
+        int bytes = ropBitmap.getByteCount();//字节数
+        ByteBuffer buf = ByteBuffer.allocate(bytes);//分配空间
+        ropBitmap.copyPixelsToBuffer(buf);
+        byte[] ropByte = buf.array();
+
+        try {
+            //获得密钥
+            byte[] aesKey = AES256Util.initKey();
+            int len = aesKey.length;//aes密钥字节长度
+            ShowLog("AES256 密钥长度为：" + len + "字节，" + 8 * len + "位");
+            ShowLog("AES256 密钥 : " + BytesToHex.fromBytesToHex(aesKey));
+            //加密
+            ShowToastLong("加密中");
+            byte[] encrypt = AES256Util.encryptAES(ropByte, aesKey);
+            ShowLog("隐私区域密文 : " + BytesToHex.fromBytesToHex(encrypt));
+            //显示图像
+            Bitmap aesBitmap = Bitmap.createBitmap(ropMat.width(), ropMat.height(),
+                    Bitmap.Config.ARGB_8888);
+            aesBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(encrypt));
+            privateImage.setImageBitmap(aesBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        state = 4;
     }
 
 }
