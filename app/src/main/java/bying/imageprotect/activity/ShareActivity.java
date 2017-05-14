@@ -530,6 +530,12 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
                     Bitmap.Config.ARGB_8888);
             aesBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(encrypt));
             privateImage.setImageBitmap(aesBitmap);
+            //解密
+            //byte[] plain = AES256Util.decryptAES(encrypt, aesKey);
+            //Bitmap decryptBmp = Bitmap.createBitmap(ropMat.width(), ropMat.height(),
+            //      Bitmap.Config.ARGB_8888);
+            //decryptBmp.copyPixelsFromBuffer(ByteBuffer.wrap(plain));
+            //srcImage.setImageBitmap(decryptBmp);
         } catch (Exception e) {
             e.printStackTrace();
         }
