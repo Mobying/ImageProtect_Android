@@ -12,6 +12,17 @@
 
         <include layout="@layout/custom_toolbar"/>
 
+        <Button
+            android:id="@+id/btn_logout"
+            style="@style/Smile.Button.logout"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:text="退出登录" />
+
     </LinearLayout>
 
     <!--drawer布局-->
