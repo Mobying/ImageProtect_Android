@@ -38,11 +38,15 @@ import org.opencv.core.Scalar;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Map;
 
 import bying.imageprotect.R;
 import bying.imageprotect.base.LeftMenuBaseActivity;
 import bying.imageprotect.util.AES256Util;
 import bying.imageprotect.util.BytesToHex;
+import bying.imageprotect.util.RSAUtil;
 
 import static org.opencv.core.CvType.CV_8UC1;
 
@@ -89,6 +93,9 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
     //图像切割变量
     Mat srcMat, dstMat, ropMat, mask;
     Bitmap ropBitmap;
+
+    //图像加密变量
+    byte[] aesKey, rsaPublicKey;
 
 
     //    Thread checkFaceThread = new Thread(){
@@ -517,7 +524,7 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
 
         try {
             //获得密钥
-            byte[] aesKey = AES256Util.initKey();
+            aesKey = AES256Util.initKey();
             int len = aesKey.length;//aes密钥字节长度
             ShowLog("AES256 密钥长度为：" + len + "字节，" + 8 * len + "位");
             ShowLog("AES256 密钥 : " + BytesToHex.fromBytesToHex(aesKey));
@@ -536,6 +543,17 @@ public class ShareActivity extends LeftMenuBaseActivity implements View.OnClickL
             //      Bitmap.Config.ARGB_8888);
             //decryptBmp.copyPixelsFromBuffer(ByteBuffer.wrap(plain));
             //srcImage.setImageBitmap(decryptBmp);
+
+            //RSA加密AES密钥
+            Map<String, Object> keyMap = RSAUtil.initKey();
+
+            RSAPublicKey rsaPublicKey = RSAUtil.getpublicKey(keyMap);
+            RSAPrivateKey rsaPrivateKey = RSAUtil.getPrivateKey(keyMap);
+            System.out.println("RSA PublicKey: " + rsaPublicKey);
+            System.out.println("RSA PrivateKey: " + rsaPrivateKey);
+
+            byte[] rsaResult = RSAUtil.encrypt(aesKey, rsaPublicKey);
+            System.out.println("RSA加密AES密钥：" + BytesToHex.fromBytesToHex(rsaResult));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -24,6 +24,7 @@ import bying.imageprotect.activity.MainActivity;
 import bying.imageprotect.activity.SearchActivity;
 import bying.imageprotect.activity.SetActivity;
 import bying.imageprotect.activity.ShareActivity;
+import helper.SQLiteHandler;
 
 /**
  * Created by Wu_bying on 2017/5/8.
@@ -33,39 +34,48 @@ import bying.imageprotect.activity.ShareActivity;
 public class LeftMenuBaseActivity extends BaseActivity {
     //声明相关变量
     //    private NavigationView nav;
-//    private TextView login, userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        login = (TextView) findViewById(R.id.login);
-//        userid = (TextView) findViewById(R.id.userid);
-//        initLeftSlip();//侧滑
-//        initLogin();//登录
-//        initClickEvents();//注册事件
+        //        login = (TextView) findViewById(R.id.login);
+        //        userid = (TextView) findViewById(R.id.userid);
+        //        initLeftSlip();//侧滑
+        //        initLogin();//登录
+        //        initClickEvents();//注册事件
     }
 
-        public void loginListener(NavigationView nav) {
-            View headview = nav.getHeaderView(0);
-            TextView login = (TextView) headview.findViewById(R.id.login);
-    //        //        if (userManager.getCurrentUser() == null) {
-//            userid.setVisibility(View.GONE);
-//            login.setVisibility(View.VISIBLE);
-            login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getCurrentActivity(), LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            });
+    public void loginListener(NavigationView nav) {
+        View headView = nav.getHeaderView(0);
+        TextView login = (TextView) headView.findViewById(R.id.v_login);
+        TextView username = (TextView) headView.findViewById(R.id.username);
+
+        // SqLite database handler
+        SQLiteHandler db = new SQLiteHandler(getApplicationContext());
+
+        // Fetching user details from sqlite
+        //HashMap<String, String> user = db.getUserDetails();
+
+        if (db.getUserDetails().get("name")==null) {
+            username.setVisibility(View.GONE);
+            login.setVisibility(View.VISIBLE);
+        } else {
+            username.setVisibility(View.VISIBLE);
+            login.setVisibility(View.GONE);
+            username.setText(db.getUserDetails().get("name"));
         }
-    //        } else {
-    //            userid.setVisibility(View.VISIBLE);
-    //            login.setVisibility(View.GONE);
-    //            userid.setText(userManager.getCurrentUser().getUsername());
-    //        }
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getCurrentActivity(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
 
     public void initLeftSlip(Toolbar toolbar, DrawerLayout mDrawerLayout) {
         //三行代码绑定DrawerLayout和NavigationView
@@ -82,9 +92,7 @@ public class LeftMenuBaseActivity extends BaseActivity {
         };
         mDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //设置菜单列表
-        //        simpleAdapter = new LeftMenuAdapter().getAdapter(this);
-        //        lvLeftMenu.setAdapter(simpleAdapter);
+
     }
 
     //判断侧滑点击的按钮并处理逻辑

@@ -37,7 +37,7 @@ public class MainActivity extends LeftMenuBaseActivity {
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_draw);
         nav = (NavigationView) findViewById(R.id.nav_view);
-        login = (TextView) findViewById(R.id.login);
+//        login = (TextView) findViewById(R.id.login);
         loginListener(nav);
         navigationListener(nav,1);
         initToolbar();
